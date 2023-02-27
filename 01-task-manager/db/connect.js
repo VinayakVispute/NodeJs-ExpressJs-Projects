@@ -1,1 +1,13 @@
-const connectionString = 'mongodb+srv://VinayakVispute:Admin@2023@nodejsexpressjsprojects.pbdp0vj.mongodb.net/?retryWrites=true&w=majority'
+const mongoose =require('mongoose')
+
+
+const connectDB = (url) => {
+    return mongoose.connect(url,{
+        useNewUrlParser:true,
+        useCreateIndex:true,
+        useFinalAndModify:false,
+        useUnifiedTopology : true,
+    })
+}
+
+module.exports = connectDB;
