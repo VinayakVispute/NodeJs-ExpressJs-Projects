@@ -1,9 +1,16 @@
+const Product = require('../models/product')
+
 const getAllProductsStatic = async(req,res) =>{
-    return res.status(200).send({msg:'Products Testing Route'})
+    const products = await Product.find({
+        name:'vase table',
+    })
+    return res.status(200).send({products,nbHits:products.length})
 }
 
 const getAllProducts = async(req,res) =>{
-    return res.status(200).send({msg:'Products Route'})
+    const products = await Product.find({req.query})
+    return res.status(200).send({products,nbHits:products.length})
+
 }
 
 
