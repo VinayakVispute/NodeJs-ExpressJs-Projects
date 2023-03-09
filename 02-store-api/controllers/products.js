@@ -2,8 +2,8 @@ const Product = require("../models/product");
 
 const getAllProductsStatic = async (req, res) => {
   const search = "AB";
-  const products = await Product.find({}).select('name price')
-  return res.status(200).send({ products, nbHits: products.length });
+  const products = await Product.find({}).select('name price').limit(4)
+  return res.status(200).send({nbHits: products.length , products});
 };
 
 const getAllProducts = async (req, res) => {
@@ -20,7 +20,6 @@ const getAllProducts = async (req, res) => {
   if (name) {
     queryObject.name = { $regex: name, $options: "i" };
   }
-//   console.log(queryObject);
 
   let results =  Product.find(queryObject);
 
@@ -43,6 +42,8 @@ const getAllProducts = async (req, res) => {
   return res.status(200).send({ products, nbHits: products.length });
 };
 
+const page = Number(req.query.page)  || 1;
+const limit = Number(req.query.limit) || 10; 
 
 
 module.exports = {
