@@ -2,8 +2,12 @@ const Product = require("../models/product");
 
 const getAllProductsStatic = async (req, res) => {
   const search = "AB";
-  const products = await Product.find({}).select('name price').limit(4)
-  return res.status(200).send({nbHits: products.length , products});
+  const products = await Product.find({})
+    .select("name price")
+    .sort("-price")
+    .limit(10)
+    .skip(10);
+  return res.status(200).send({ nbHits: products.length, products });
 };
 
 const getAllProducts = async (req, res) => {
@@ -21,30 +25,29 @@ const getAllProducts = async (req, res) => {
     queryObject.name = { $regex: name, $options: "i" };
   }
 
-  let results =  Product.find(queryObject);
+  let results = Product.find(queryObject);
 
-// Sort
+  // Sort
 
   if (sort) {
     // console.log(sort);
-    const sortList = sort.split(',').join(' ');
-    results = results.sort(sortList)
-  }else {
-    results = results.sort('createdAt')
+    const sortList = sort.split(",").join(" ");
+    results = results.sort(sortList);
+  } else {
+    results = results.sort("createdAt");
   }
 
-  if (fields){
-    const fieldsList  = fields.split(',').join(' ');
-    results = results.select(fieldsList)
+  if (fields) {
+    const fieldsList = fields.split(",").join(" ");
+    results = results.select(fieldsList);
   }
-
+  const page = Number(req.query.page) || 1;
+  const limit = Number(req.query.limit) || 10;
+  const skip = (page - 1) * limit;
+  results = results.skip(skip).limit(limit)
   const products = await results;
   return res.status(200).send({ products, nbHits: products.length });
 };
-
-const page = Number(req.query.page)  || 1;
-const limit = Number(req.query.limit) || 10; 
-
 
 module.exports = {
   getAllProductsStatic,
